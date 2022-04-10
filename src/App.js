@@ -1,24 +1,33 @@
-import logo from './logo.svg';
 import './App.css';
+import React, { useState } from 'react';
+import Responsable from './components/responsable/Responsable';
+import Connection from './components/connection/Connection';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Inscription from './components/connection/Inscription';
+import MotDePasseOublier from './components/connection/MotDePasseOublier';
+import TokenContext from "./components/context/TokenContext";
+
 
 function App() {
+  const [token, setToken] = useState();
+  const contextValue = {
+    token: token,
+    updateToken: setToken
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <TokenContext.Provider value={contextValue}>
+      <React.Fragment>
+      <Router>
+          <Routes>
+            <Route path="/" element={<Connection />} />
+            <Route path="/MotDePasseOublier" element={<MotDePasseOublier />} />
+            <Route path='/Inscription' element={<Inscription />} />
+            <Route path="/Responsable/*" element={<Responsable />} />
+          </Routes>
+      </Router>
+    </React.Fragment>
+    </TokenContext.Provider>
   );
 }
 
