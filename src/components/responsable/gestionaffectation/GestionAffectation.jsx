@@ -42,8 +42,6 @@ function Modifier({ id, pers, dep, type, qtetotal }) {
     }
     const modifier = (e) => {
         const value = e.target.value
-        // console.log(affectation);
-        // console.log(affectation[value]);
         document.querySelector("#courant" + id).value = value;
         document.querySelector("#qte" + id).value = affectation[value];
     }

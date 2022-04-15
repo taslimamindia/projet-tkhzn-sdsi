@@ -13,12 +13,13 @@ import GestionRessource from "./gestionressource/GestionRessource";
 import RessourcesDisponible from "./ressourcesdisponibles/RessourcesDisponible";
 import RessourcesLivrees from "./ressourceslivrees/RessourcesLivrees";
 import GestionUtilisateurs from "./GestionUtilisateurs";
+
 export class Layout extends React.Component {
     render() {
         return(
             <React.Fragment>
 
-                <main id="main" className="main">
+                <main id="main">
                     <Routes>
                         <Route path="/Accueil" element={<Accueil />} />
                         <Route path="/RessourcesLivrees" element={<RessourcesLivrees />} />

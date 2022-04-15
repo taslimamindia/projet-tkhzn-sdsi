@@ -1,5 +1,15 @@
 import React, { Component } from 'react'  
 
+const toggle = () => {
+    const body = document.querySelector('body')
+    if(body.classList.contains("toggle-sidebar")) {
+        body.classList.remove("toggle-sidebar")
+    }
+    else {
+        body.classList.add("toggle-sidebar")
+    }
+}
+
 function Message({title, className, message, timeAgo}) {
     return(
         <li className={className}>
@@ -24,7 +34,7 @@ export class Header extends Component {
                         <img src="assets/img/logo.png" alt=""/>
                         <span className="d-none d-lg-block">Gestion Ressources</span>
                         </a>
-                        <i className="bi bi-list toggle-sidebar-btn"></i>
+                        <i className="bi bi-list toggle-sidebar-btn" onClick={toggle}></i>
                     </div>
                     {/* <!-- End Logo --> */}
             
@@ -32,7 +42,7 @@ export class Header extends Component {
                         <ul className="d-flex align-items-center">
                             <li className="nav-item dropdown">
                     
-                                <a className="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
+                                <a className="nav-link nav-icon" type='button' data-bs-toggle="dropdown">
                                     <i className="bi bi-bell"></i>
                                     <span className="badge bg-primary badge-number">4</span>
                                 </a>
