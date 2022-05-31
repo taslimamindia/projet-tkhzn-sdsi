@@ -1,0 +1,470 @@
+Terminer
+<!-- evaluer fournisseur -->
+<main id="main" class="main">
+
+    <div class="pagetitle">
+        <h1>Evaluer fournisseur</h1>
+
+    </div><!-- End Page Title -->
+
+    <section class="section">
+        <div class="row">
+            <div class="col-lg-12">
+
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title"></h5>
+
+                        <!-- Table with stripped rows -->
+                        <table class="table datatable">
+                            <thead>
+                                <tr>
+                                    <th>Fournisseur</th>
+                                    <th>Gérant</th>
+                                    <th>Lieu</th>
+                                    <th>Status</th>
+                                    <th>Evaluation</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th scope="row">Biognash</th>
+                                    <td>Alami</td>
+                                    <td>Tanger</td>
+                                    <td>
+                                        <span class="badge bg-success">Très bon</span>
+                                        <span class="badge bg-danger">Mauvais</span>
+                                        <span class="badge bg-secondary">Sans évaluation</span>
+                                    </td>
+                                    <td>
+
+                                        <button type="button" class="btn btn-outline-info" data-bs-toggle="modal"
+                                            data-bs-target="#modifier1">evaluer</button>
+                                        <div class="modal fade" id="modifier1" tabindex="-1">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Evaluer fournisseur</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+
+                                                        <br>
+
+
+                                                        <div class="col-12">
+                                                            <label for="departement" class="form-label">
+                                                                <p> <b>Evaluer</b></p>
+                                                            </label>
+
+                                                            <br>
+
+                                                            <select class="selectpicker" data-live-search="true">
+                                                                <option selected>Très Bon</option>
+                                                                <option>Mauvais</option>
+                                                            </select>
+
+                                                        </div>
+                                                        <div class="col-6">
+                                                            <label for="ram" class="form-label"><b> Pourquoi</b></label>
+                                                            <textarea name="comment" rows="4" cols="35"></textarea>
+
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal">Fermer</button>
+                                                        <button type="button"
+                                                            class="btn btn-primary">Enregistrer</button>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                        <!-- End Table with stripped rows -->
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+</main><!-- End #main -->
+
+<!-- Ajouter panne -->
+<main id="main" class="main">
+
+  <div class="pagetitle">
+      <h1>Ajouter panne</h1>
+
+  </div><!-- End Page Title -->
+
+  <section class="section">
+      <div class="row">
+          <div class="col-lg-6">
+
+              <div class="card">
+                  <div class="card-body">
+                      <h5 class="card-title">Panne</h5>
+
+                      <!-- General Form Elements -->
+                      <form>
+                          <div class="row mb-3">
+                              <label for="inputText" class="col-sm-10 col-form-label">Code ressource</label>
+                              <div class="col-sm-10">
+                                  <input type="text" class="form-control">
+                              </div>
+                          </div>
+                          <fieldset class="row mb-3">
+                              <legend class="col-form-label col-sm-10 pt-0">Type de ressource</legend>
+                              <div class="col-sm-10">
+                                  <div class="form-check">
+                                      <input class="form-check-input" type="radio" name="gridRadios" id="ord"
+                                          value="option1">
+                                      <label class="form-check-label" for="ordinateur">
+                                          Ordinateur
+                                      </label>
+                                  </div>
+                                  <!-- s'il s'agit d'un ord il doit choisir l'ordre de la ressource 
+                  
+                  <label for="inputOrdre" class="col-sm-10 col-form-label">Ordre de la panne</label>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="gridRadios" id="materiel" value="option1" >
+                    <label class="form-check-label" for="materiel">
+                      Materiel
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="gridRadios" id="logiciel" value="option2" >
+                    <label class="form-check-label" for="logiciel">
+                      Logiciel
+                    </label>
+                  </div>
+              -->
+                                  <div class="form-check">
+                                      <input class="form-check-input" type="radio" name="gridRadios" id="imp"
+                                          value="option2">
+                                      <label class="form-check-label" for="imprimante">
+                                          Imprimante
+                                      </label>
+                                  </div>
+                              </div>
+                          </fieldset>
+                          <div class="row mb-3">
+                              <div class="form-floating">
+                                  <textarea class="form-control" placeholder="Description" id="floatingTextarea"
+                                      style="height: 100px;"></textarea>
+                                  <label for="floatingTextarea">Description</label>
+                              </div>
+                          </div>
+                          <div class="row mb-3">
+                              <div class="form-floating mb-3">
+                                  <select class="form-select" id="floatingSelect" aria-label="fréquence">
+                                      <option selected="">Fréquente</option>
+                                      <option value="1">Rare</option>
+                                      <option value="2">Permanante</option>
+                                  </select>
+                                  <label for="floatingSelect">Fréquence</label>
+                              </div>
+                          </div>
+                          <div class="row mb-3">
+                              <label for="inputDate" class="col-sm-10 col-form-label">Date de la panne</label>
+                              <div class="col-sm-10">
+                                  <input type="date" class="form-control">
+                              </div>
+                          </div>
+                          <div class="row mb-3">
+                              <div class="col-sm-10">
+                                  <button type="submit" class="btn btn-primary">Enregister</button>
+                              </div>
+                          </div>
+
+                      </form><!-- End General Form Elements -->
+                  </div>
+              </div>
+          </div>
+      </div>
+
+      </div>
+      </div>
+      </div>
+  </section>
+
+</main><!-- End #main -->
+
+Deja commencé
+<!-- lister constats Dans servicemaintenance  -->  responsable /panneservice/getConstats
+<main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Lister Constats</h1>
+    </div><!-- End Page Title -->
+
+    <section class="section">
+      <div class="row">
+        <div class="col-lg-12">
+
+          <div class="card">
+            <div class="card-body">
+    
+              
+              <!-- Table with stripped rows -->
+              <table class="table datatable">
+                <thead>
+                  <tr>
+                    <th>Constat</th><!-- id-->
+                    <th >Ressource</th>
+                    <th >Panne</th>
+                    <th>Date de la panne</th>
+                    <th >Décision</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td><a href="voir plus" data-bs-toggle="modal" data-bs-target="#ressource2">Imprimante</a>
+                      <div class="modal fade" id="ressource2" tabindex="-1">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title">Caractéristiques: Imprimante HP</h5>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                              <p><b style="color: cadetblue;">Vitesse : </b>10/7 ppm (noir/couleur)</p>
+                              <p><b style="color: cadetblue;">Résolution : </b> 4800 x 1200 ppp</p>
+                              <p><b style="color: cadetblue;">Marque : </b>HP</p>
+                              <!-- if Ressource est affecté afficher la date d'affectation
+                              <p><b style="color: cadetblue;">Date d'affectation : </b>13-04-2022</p>-->
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+     <!--                 <a href="voir plus" data-bs-toggle="modal" data-bs-target="#ressource1">Ordinateur</a>
+                      <div class="modal fade" id="ressource1" tabindex="-1">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title">Caractéristiques: PC HP</h5>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                              <p><b style="color: cadetblue;">CPU : </b>intel</p>
+                              <p><b style="color: cadetblue;">RAM : </b>8Go</p>
+                              <p><b style="color: cadetblue;">Disque : </b>256Go</p>
+                              <p><b style="color: cadetblue;">Ecran : </b>...</p>
+                              <p><b style="color: cadetblue;">Marque : </b>HP</p>
+                              &lt;!&ndash; if Ressource est affecté afficher la date d'affectation&ndash;&gt;
+                              <p><b style="color: cadetblue;">Date d'affectation : </b>13-04-2022</p>
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>-->
+                    </td>
+
+                   <td>
+                      <a href="voir-plus" data-bs-toggle="modal" data-bs-target="#panne">Détails</a>
+                 <div class="modal fade" id="panne" tabindex="-1">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title">Information de la panne</h5>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+
+                            <div class="col-10">
+                              <label for="description" class="form-label"><b>Description</b></label>
+                              <p>panne</p>
+                            </div>
+                            <div class="col-10">
+                              <label for="frequence" class="form-label"><b>Fréquence</b></label>
+                              <p>rare</p>
+                            </div>
+                              <div class="col-10">
+                                <label for="ordre" class="form-label"><b>Ordre</b></label>
+                                <p>materiel</p>
+                              </div>
+                              <br>                 
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>10.2.2000</td>
+
+                   <td><button type="button" class="btn btn-outline-primary btn-sm">Réparer</button><!-- envoie de notif au service-->
+                    <button type="button" class="btn btn-outline-warning btn-sm">Changer</button><!-- envoie d'email au fou si condition true-->
+                     <span class="badge border-primary border-1 text-primary">Traitée</span></td>
+
+                  </tr>
+
+                </tbody>
+              </table>
+              <!-- End Table with stripped rows -->
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+</main><!-- End #main -->
+
+Pas encore commencé
+<!-- envoyer Constat {idc:1} --> /panneservice/envConstat
+<main id="main" class="main">
+
+    <div class="pagetitle">
+        <h1>Lister Pannes</h1>
+    </div><!-- End Page Title -->
+
+    <section class="section">
+        <div class="row">
+            <div class="col-lg-12">
+
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Envoyer Constat</h5>
+
+                        <!-- Table with stripped rows -->
+                        <table class="table datatable">
+                            <thead>
+                                <tr>
+                                    <th>Personne du département</th>
+                                    <th>Département</th>
+                                    <th>Ressource</th>
+                                    <th>Panne</th>
+                                    <th>Date de la panne</th>
+                                    <th>Constat</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Azddine</td>
+                                    <td>Info</td>
+                                    <td><a href="voir plus" data-bs-toggle="modal"
+                                            data-bs-target="#ressource2">Imprimante</a>
+                                        <div class="modal fade" id="ressource2" tabindex="-1">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Caractéristiques: Imprimante HP</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p><b style="color: cadetblue;">Vitesse : </b>10/7 ppm
+                                                            (noir/couleur)</p>
+                                                        <p><b style="color: cadetblue;">Résolution : </b> 4800 x 1200
+                                                            ppp</p>
+                                                        <p><b style="color: cadetblue;">Marque : </b>HP</p>
+                                                        <!-- if Ressource est affecté afficher la date d'affectation
+                              <p><b style="color: cadetblue;">Date d'affectation : </b>13-04-2022</p>-->
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal">Annuler</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--                 <a href="voir plus" data-bs-toggle="modal" data-bs-target="#ressource1">Ordinateur</a>
+                      <div class="modal fade" id="ressource1" tabindex="-1">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title">Caractéristiques: PC HP</h5>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                              <p><b style="color: cadetblue;">CPU : </b>intel</p>
+                              <p><b style="color: cadetblue;">RAM : </b>8Go</p>
+                              <p><b style="color: cadetblue;">Disque : </b>256Go</p>
+                              <p><b style="color: cadetblue;">Ecran : </b>...</p>
+                              <p><b style="color: cadetblue;">Marque : </b>HP</p>
+                              &lt;!&ndash; if Ressource est affecté afficher la date d'affectation&ndash;&gt;
+                              <p><b style="color: cadetblue;">Date d'affectation : </b>13-04-2022</p>
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>-->
+                                    </td>
+
+                                    <td>
+                                        <a href="voir-plus" data-bs-toggle="modal" data-bs-target="#panne">Détails</a>
+                                        <div class="modal fade" id="panne" tabindex="-1">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Information de la panne</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+
+                                                        <div class="col-10">
+                                                            <label for="nom"
+                                                                class="form-label"><b>Description</b></label>
+                                                            <p></p>
+                                                        </div>
+                                                        <div class="col-10">
+                                                            <label for="prenom"
+                                                                class="form-label"><b>Fréquence</b></label>
+                                                            <p></p>
+                                                        </div>
+
+                                                        <br>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal">Fermer</button>
+
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>10-02-2022</td>
+                                    <td> <button type="button" class="btn btn-outline-info"
+                                            data-bs-toggle="modal">Envoyer</button></td>
+
+                                </tr>
+
+                            </tbody>
+                        </table>
+                        <!-- End Table with stripped rows -->
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+</main>
+
+
+

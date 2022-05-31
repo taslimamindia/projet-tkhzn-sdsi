@@ -1,42 +1,42 @@
 import React from "react";
-import { Routes, Route } from 'react-router-dom';
-import Profil from "../Profil";
+import { Routes, Route} from 'react-router-dom';
+// import Profil from "../Profil";
 import Accueil from "./accueil/Accueil";
 
-import Fournisseur from "./enregistrerressources/Fournisseur";
-import Imprimante from "./enregistrerressources/Imprimante";
-import Ordinateur from "./enregistrerressources/Ordinateur";
 import Ressource from "./enregistrerressources/Ressource";
-
 import GestionAffectation from "./gestionaffectation/GestionAffectation";
-import GestionRessource from "./gestionressource/GestionRessource";
 import RessourcesDisponible from "./ressourcesdisponibles/RessourcesDisponible";
 import RessourcesLivrees from "./ressourceslivrees/RessourcesLivrees";
-import GestionUtilisateurs from "./GestionUtilisateurs";
+import GestionUtilisateurs from "./gestionsutilisateurs/GestionUtilisateurs";
+import AppelDoffre from "./appeldoffre/AppelDoffre";
+import Messagerie from "./messagerie/Messagerie";
+import Offre from "./offre/Offre";
+import Evaluer from "./fournisseur/Evaluer"
+import ListerConstat from "./constat/ListerConstat";
 
-export class Layout extends React.Component {
-    render() {
-        return(
-            <React.Fragment>
+function Layout() {
 
-                <main id="main">
-                    <Routes>
-                        <Route path="/Accueil" element={<Accueil />} />
-                        <Route path="/RessourcesLivrees" element={<RessourcesLivrees />} />
-                        <Route path="/RessourcesDisponible" element={<RessourcesDisponible />} />
-                        <Route path="/GestionAffectation" element={<GestionAffectation />} />
-                        <Route path="/EnregistrerRessources" element={<Ressource />} />
-                        <Route path="/EnregistrerRessources/Ordinateur" element={<Ordinateur />} />
-                        <Route path="/EnregistrerRessources/Fournisseur" element={<Fournisseur />} />
-                        <Route path="/EnregistrerRessources/Imprimante" element={<Imprimante />} />
-                        <Route path="/GestionRessource" element={<GestionRessource />} />
-                        <Route path="/Profil" element={<Profil home={"/Responsable/Accueil"} />} />
-                        <Route path='/gestionUtilisateurs' element={<GestionUtilisateurs />} />
-                    </Routes>
-                </main>
-                {/* <!-- End #main --> */}
+    return (
+        <React.Fragment>
 
-            </React.Fragment>
-        )
-    }
+            <main id="main">
+                <Routes>
+                    <Route path="/Accueil" element={<Accueil />} />
+                    <Route path="/RessourcesLivrees" element={<RessourcesLivrees />} />
+                    <Route path="/RessourcesDisponible" element={<RessourcesDisponible />} />
+                    <Route path="/GestionAffectation" element={<GestionAffectation />} />
+                    <Route path="/EnregistrerRessources" element={<Ressource />} />
+                    <Route path="/GestionDesDemandes" element={<AppelDoffre />} />
+                    <Route path='/gestionUtilisateurs' element={<GestionUtilisateurs />} />
+                    <Route path='/Offre' element={<Offre />} />
+                    <Route path='/Messagerie' element={<Messagerie />} />
+                    <Route path='/Evaluer' element={<Evaluer />} />
+                    <Route path='/ListerConstat' element={<ListerConstat />} />
+                </Routes>
+            </main>
+
+        </React.Fragment>
+    )
 }
+
+export default Layout;

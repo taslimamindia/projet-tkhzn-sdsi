@@ -1,25 +1,101 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { useForm } from "react-hook-form";
+import { Link } from 'react-router-dom';
 import api from '../../../api';
 import TokenContext from '../../context/TokenContext';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import OrdinateurModif from './Modifier/Ordinateur';
+import ImprimanteModif from './Modifier/Imprimante';
+toast.configure();
 
-export function Ordinateur({ data }) {
+function Affecter({actualiser, code, users}) {
+    const { register, handleSubmit, reset, formState: { errors } } = useForm();
+    const { token } = useContext(TokenContext);
+    const onSubmit = (data) => {
+        const donnees = {"ressource": code, "pers_dep": data.choix, "dep": null, "qte": 1}
+        api.post("/affectationservice/ajouterAff", donnees, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token,
+            }
+        })
+        .then(res => {
+            if (res.status === 200) {
+                toast.success("Les affectations on été effecteur avec succès. ✌️👍🏿", {
+                    position: toast.POSITION.TOP_CENTER,
+                    autoClose: 5000,
+                    theme: "colored"
+                });
+                reset();
+                actualiser();
+            }
+            else {
+                toast.error("Une error est survenue, l'affectation n'a pas aboutie !!!", {
+                    position: toast.POSITION.TOP_RIGHT,
+                    autoClose: 10000,
+                    theme: "colored"
+                });
+            }
+        })
+        .catch(function (error) {
+        })
+    }
+    return (
+        <>
+            <button type="button"  data-bs-toggle="modal" data-bs-target={"#aff" + code} className="btn btn-outline-primary btn-sm" >Affecter</button>
+            <div className="modal fade" id={"aff" + code} tabindex="-1">
+                <div className="modal-dialog">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h5 className="modal-title">Affectation :</h5>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div className="modal-body">
+                        <form onSubmit={handleSubmit(onSubmit)}>
+                                <div className="row mb-3">
+                                    <label for="inputText" className="col-sm-10 col-form-label">
+                                        <span className="badge border-primary border-1 text-primary">Personnel: </span>
+                                    </label>
+                                    <div className="col-sm-10">
+                                        <select {...register("choix", { required: true })} className="form-select">
+                                            {
+                                                users.map(item => {
+                                                    return <option value={item.login}>{item.nom} &nbsp; {item.prenom}</option>
+                                                })
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                                <div className="row mb-3 d-f">
+                                    <button type="submit" className="btn btn-primary" data-bs-dismiss="modal">Affecter</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </>
+    )
+}
+
+function Ordinateur({ data }) {
     const cadetblue = { color: "cadetblue" }
     return (
         <>
-            <a href="voir plus" data-bs-toggle="modal" data-bs-target={"#ressourceImp" + data.code}>Imprimante</a>
-            <div className="modal fade" id={"ressourceImp" + data.code} tabindex="-1">
+            <a href="voir plus" data-bs-toggle="modal" data-bs-target={"#ressourceImp" + data.id}>Ordinateur</a>
+            <div className="modal fade" id={"ressourceImp" + data.id} tabindex="-1">
                 <div className="modal-dialog">
                     <div className="modal-content">
                         <div className="modal-header">
                             <h5 className="modal-title">Caractéristiques: {data.marque}</h5>
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <div className="modal-body">
-                            <p><b style={cadetblue}>CPU : </b> {data.cpu}</p>
-                            <p><b style={cadetblue}>RAM : </b>{data.ram}</p>
-                            <p><b style={cadetblue}>Disque : </b>{data.dd}</p>
-                            <p><b style={cadetblue}>Ecran : </b>{data.ecran}</p>
+                        <div className="modal-body joli-modal d-flex flex-column align-items-center">
+                            <p><b style={cadetblue}>CPU : </b> {data.cpu} Gh</p>
+                            <p><b style={cadetblue}>RAM : </b> {data.ram} Mo</p>
+                            <p><b style={cadetblue}>Disque : </b>{data.disque_d} Go</p>
+                            <p><b style={cadetblue}>Ecran : </b>{data.ecran} Pouces</p>
                             <p><b style={cadetblue}>Marque : </b>{data.marque}</p>
                             {/* if Ressource est affecté afficher la date d'affectation */}
                             {/* <p><b style={cadetblue}>Date d'affectation : </b>13-04-2022</p> */}
@@ -34,23 +110,23 @@ export function Ordinateur({ data }) {
     )
 }
 
-export function Imprimante({ data }) {
+function Imprimante({ data }) {
     const cadetblue = { color: "cadetblue" }
     console.log(data.code);
     return (
         <>
-            <a href="voir plus" data-bs-toggle="modal" data-bs-target={"#ressourceOrd" + data.code}>Ordinateur</a>
-            <div className="modal fade" id={"ressourceOrd" + data.code} tabindex="-1">
+            <a href="voir plus" data-bs-toggle="modal" data-bs-target={"#ressourceOrd" + data.id}>Imprimante</a>
+            <div className="modal fade" id={"ressourceOrd" + data.id} tabindex="-1">
                 <div className="modal-dialog">
                     <div className="modal-content">
                         <div className="modal-header">
                             <h5 className="modal-title">Caractéristiques: {data.marque}</h5>
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <div className="modal-body">
+                        <div className="modal-body joli-modal d-flex flex-column align-items-center">
                             <p><b style={cadetblue}>Marque : </b> {data.marque} </p>
-                            <p><b style={cadetblue}>Résolution : </b> {data.resolution} </p>
-                            <p><b style={cadetblue}>Vitesse : </b>{data.vitesse}</p>
+                            <p><b style={cadetblue}>Résolution : </b> {data.resolution} pixels</p>
+                            <p><b style={cadetblue}>Vitesse : </b>{data.vitesse} hz</p>
                             {/* if Ressource est affecté afficher la date d'affectation */}
                         </div>
                         <div className="modal-footer">
@@ -63,147 +139,182 @@ export function Imprimante({ data }) {
     )
 }
 
-function RessourcesDisponible() {
-    const { register, handleSubmit, reset, formState: { errors } } = useForm();
-    const cadetblue = { color: "cadetblue" }
-    // let table = {
-    //     items : [
-    //         {
-    //             "code": "I2000",
-    //             "dateLiv": "2022-04-19T15:43:31.000+00:00",
-    //             "dureeGarantie": 2,
-    //             "estAffecter": true,
-    //             "personnels": [],
-    //             "fournisseur": {
-    //                 "login": "diallo",
-    //                 "nom": "diallo",
-    //                 "prenom": "mamadou",
-    //                 "pwd": "$2a$10$yu.xsuqfE6IlN9tx4hw3Y.BvJLeZ8BjkPXFGs327Sk75OPm9zehGm",
-    //                 "active": true,
-    //                 "role": "ADMIN",
-    //                 "ressetPasswordToken": null,
-    //                 "departement": {
-    //                     "id": 1,
-    //                     "nomDep": "Info"
-    //                 },
-    //                 "mail": "ma@fes.fst",
-    //                 "gerant": "Mdou",
-    //                 "lieu": "fes",
-    //                 "nomSocite": "fst",
-    //                 "enabled": true,
-    //                 "accountNonExpired": true,
-    //                 "credentialsNonExpired": true,
-    //                 "accountNonLocked": true,
-    //                 "username": "diallo",
-    //                 "password": "$2a$10$yu.xsuqfE6IlN9tx4hw3Y.BvJLeZ8BjkPXFGs327Sk75OPm9zehGm",
-    //                 "authorities": [
-    //                     {
-    //                         "role": "ADMIN",
-    //                         "authority": "ADMIN"
-    //                     }
-    //                 ]
-    //             },
-    //             "marque": "lenovo",
-    //             "resolution": 1024.0,
-    //             "vitesse": 50.0
-    //         },
-    //         {
-    //             "code": "O2001",
-    //             "dateLiv": "2022-04-06T15:43:31.000+00:00",
-    //             "dureeGarantie": 3,
-    //             "estAffecter": true,
-    //             "cpu": "Amd",
-    //             "dd": 500,
-    //             "ecran": 1024.0,
-    //             "marque": "hp",
-    //             "ram": 24,
-    //             "personnels": [],
-    //             "fournisseur": {
-    //                 "login": "Khadi",
-    //                 "nom": "Jallili",
-    //                 "prenom": "Khadija",
-    //                 "pwd": "$2a$10$sU.9IK78EnSTG1GOxPxkXO.9GDo.FRZuku63c6dfGceOKS0rr5RXO",
-    //                 "active": true,
-    //                 "role": "ADMIN",
-    //                 "ressetPasswordToken": null,
-    //                 "departement": {
-    //                     "id": 1,
-    //                     "nomDep": "Info"
-    //                 },
-    //                 "mail": "ma@khadij.fst",
-    //                 "gerant": "Khadi",
-    //                 "lieu": "fes",
-    //                 "nomSocite": "fst",
-    //                 "enabled": true,
-    //                 "accountNonExpired": true,
-    //                 "credentialsNonExpired": true,
-    //                 "accountNonLocked": true,
-    //                 "username": "Khadi",
-    //                 "password": "$2a$10$sU.9IK78EnSTG1GOxPxkXO.9GDo.FRZuku63c6dfGceOKS0rr5RXO",
-    //                 "authorities": [
-    //                     {
-    //                         "role": "ADMIN",
-    //                         "authority": "ADMIN"
-    //                     }
-    //                 ]
-    //             }
-    //         }
-    //     ]
-    // }
+function Modifier({ item, type, charger }) {
+    return (
+        <>
+            <button type="button" className="btn btn-outline-warning btn-sm" data-toggle="modal" data-target={"#modifier" + item.id}>Modifier</button>
+            <div className="modal fade" id={"modifier" + item.id} tabindex="-1">
+                <div className="modal-dialog">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h5 className="modal-title">Modification d'{type}:</h5>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div className="modal-body">
+                            {type === "Ordinateur" ?
+                                <OrdinateurModif charger={charger} item={item} />
+                                :
+                                <ImprimanteModif charger={charger} item={item} />
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </>
+    )
+}
 
-    // const { register, handleSubmit, reset, formState: { errors } } = useForm();
-    const { token, updateToken } = useContext(TokenContext);
-    const [data, setData] = useState([]);
-    useEffect(() => {
-
-        const fetchData = async () => {
-            console.log("monté");
-            const res = await api.get("/ressourceservice/ListDisp", {
+function Tr({ Users, item, type, charger }) {
+    const { token } = useContext(TokenContext);
+    const supprimer = (code) => {
+        if (window.confirm("Vous voulez supprimer cette ressource ?")) {
+            api.post("/ressourceservice/deleteRess", { "code": code }, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': 'Bearer ' + token,
                 }
+            }).then(res => {
+                if (res.status === 200) {
+                    toast.success("La ressource a été supprimer avec succes.", {
+                        position: toast.POSITION.TOP_RIGHT,
+                        autoClose: 5000,
+                        theme: "colored"
+                    });
+                    charger();
+                } else {
+                    toast.error("🤦🏿‍♂️ Une error est survenue dans la rêquete 🙆‍♀️!!!", {
+                        position: toast.POSITION.TOP_CENTER,
+                        autoClose: 10000,
+                        theme: "colored"
+                    })
+                }
             })
+                .catch(function (error) {
+                    toast.error("🤦🏿‍♂️ Une error est survenue côté server 🙆‍♀️!!!", {
+                        position: toast.POSITION.TOP_CENTER,
+                        autoClose: 10000,
+                        theme: "colored"
+                    })
+                })
+        }
+    }
+    return (
+        <>
+            <tr>
+                <td key={item.id + "1"}>{item.id}</td>
+                <td key={item.id + "3"}>{item.dateLiv}</td>
+                <td key={item.id + "4"}>{item.dureeGarantie}</td>
+                <td key={item.id + "5"}>
+                    {item.id.startsWith('I') && <Imprimante data={item} />}
+                    {item.id.startsWith('O') && <Ordinateur data={item} />}
+                </td>
+                <td key={item.id + "6"}>
+                    {item.estAffecter === true ? <span className="badge bg-warning">Non Affecté</span> : <span className="badge bg-success">Affectée</span>}
+                </td>
+                <td key={item.id + "7"}>
+                    {item.estAffecter === false ? <></> : <Affecter actualiser={charger} code={item.id} users={Users} />}
+                    <Modifier charger={charger} item={item} type={type} />
+                    <button type="button" onClick={(e) => { supprimer(item.id) }} className="btn btn-outline-danger btn-sm" >Supprimer</button>
+                </td>
+            </tr>
+        </>
+    )
+}
+
+function RessourcesDisponible() {
+    const { register, handleSubmit, reset, formState: { errors } } = useForm();
+    const cadetblue = { color: "cadetblue" }
+    const { token } = useContext(TokenContext);
+    const [data, setData] = useState([]);
+    const [users, setUsers] = useState([]);
+
+    const charger = () => {
+        api.get("/ressourceservice/ListDisp", {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token,
+            }
+        }).then(res => {
             if (res.status === 200) {
-                console.log("first");
                 setData(res.data);
-                console.log(data);
-                console.log("first");
+                
+            } else {
+                toast.error("🤦🏿‍♂️ Une error est survenue dans la rêquete 🙆‍♀️!!!", {
+                    position: toast.POSITION.TOP_CENTER,
+                    autoClose: 10000,
+                    theme: "colored"
+                })
+                
+            }
+        }).catch(function (error) {
+            toast.error("🤦🏿‍♂️ Une error est survenue côté server 🙆‍♀️!!!", {
+                position: toast.POSITION.TOP_CENTER,
+                autoClose: 10000,
+                theme: "colored"
+            })
+        })
+
+        api.get("/userservice/users", {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token,
+            }
+        }).then(res => {
+            if (res.status === 200) {
+                setUsers(res.data);
             }
             else {
-                console.log("Une erreur sait produit !!!");
+                toast.error("🤦🏿‍♂️ Une error est survenue dans la rêquete 🙆‍♀️!!!", {
+                    position: toast.POSITION.TOP_CENTER,
+                    autoClose: 10000,
+                    theme: "colored"
+                })
             }
-        }
-        fetchData();
-
-
+        }).catch(function (error) {
+            toast.error("🤦🏿‍♂️ Une error est survenue dans la rêquete 🙆‍♀️!!!", {
+                position: toast.POSITION.TOP_CENTER,
+                autoClose: 10000,
+                theme: "colored"
+            })
+        })
+    }
+    useEffect(() => {
+        charger();
     }, [])
     return (
         <>
             <div className="pagetitle">
-                <h1>Réssource Disponible</h1>
+                <h1>RESSOURCES</h1>
                 <nav>
                     <ol className="breadcrumb">
-                        <li className="breadcrumb-item"><a href="index.html">Accueil</a></li>
-                        <li className="breadcrumb-item">Ressources disponibles</li>
+                        <li className="breadcrumb-item">
+                            <Link to={"/Responsable"}>Accueil</Link>
+                        </li>
+                        <span>&nbsp; &gt; &nbsp;</span>
+                        <li className="breadcrumb-item">
+                            <Link to={"/Responsable/RessourcesDisponible"}>Réssources</Link>
+                        </li>
                     </ol>
                 </nav>
             </div>
-            {/* <!-- End Page Title --> */}
 
             <section className="section">
+            <div className='row'>
+                    {/* <div className='col-1'></div> */}
+                    <div className='col-10'></div>
+                    <div className='col-2 d-flex justify-content-end'><button className='btn btn-primary' onClick={(e) => { charger() }}>Actualiser</button></div>
+                </div>
+                <br />
                 <div className="row">
                     <div className="col-lg-12">
                         <div className="card">
                             <div className="card-body">
 
-                                {/* <!-- Table with stripped rows --> */}
                                 <table className="table datatable">
                                     <thead>
                                         <tr>
                                             <th scope="col">Code</th>
-                                            <th scope="col">Ressource</th>
-                                            <th scope="col">Date livraison</th>
+                                            <th scope='col'>Date de livraison</th>
                                             <th scope="col">Durée garantie</th>
                                             <th scope="col">Type</th>
                                             <th scope="col">Etat</th>
@@ -213,31 +324,15 @@ function RessourcesDisponible() {
                                     <tbody>
                                         {
                                             data.map(item => {
-                                                return(
-                                                    <tr>
-                                                        <td key={item.code + "1"}>{item.code}</td>
-                                                        <td key={item.code + "2"}>{item.marque}</td>
-                                                        <td key={item.code + "3"}>{item.dateLiv}</td>
-                                                        <td key={item.code + "4"}>{item.dureeGarantie}</td>
-                                                        <td key={item.code + "5"}>
-                                                            {item.code.startsWith('I') && <Imprimante data={item} />}
-                                                            {item.code.startsWith('O') && <Ordinateur data={item} />}
-                                                        </td>
-                                                        <td key={item.code + "6"}>
-                                                            {item.estAffecter === true ? <span className="badge bg-success">Affectée</span> : <span className="badge bg-warning">Non Affecté</span>}
-                                                        </td>
-                                                        <td key={item.code + "7"}>
-                                                            {item.estAffecter === true ? <></> : <button type="button" className="btn btn-outline-primary btn-sm" >Affecter</button>}
-                                                            <button type="button" className="btn btn-outline-warning btn-sm" >Modifier</button>
-                                                            <button type="button" className="btn btn-outline-danger btn-sm" >Supprimer</button>
-                                                        </td>
-                                                    </tr>
+                                                return (
+                                                    <>
+                                                        {item.ord === null ? <Tr Users={users} item={item.imp} charger={charger} type={"Imprimante"} /> : <Tr charger={charger} Users={users} item={item.ord} type={"Ordinateur"} />}
+                                                    </>
                                                 )
                                             })
                                         }
                                     </tbody>
                                 </table>
-                                {/* <!-- End Table with stripped rows --> */}
 
                             </div>
                         </div>

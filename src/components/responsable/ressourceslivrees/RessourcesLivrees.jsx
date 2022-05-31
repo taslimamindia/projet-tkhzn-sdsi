@@ -1,25 +1,26 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { useForm } from "react-hook-form";
+import { Link } from 'react-router-dom';
 import api from '../../../api';
 import TokenContext from '../../context/TokenContext';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+toast.configure();
 
-
-function Affecter({ id, dep, deps, qtedispo, code }) {
-    // const { token, updateToken } = useContext(TokenContext);
-    // const { register, handleSubmit, reset, formState: { errors } } = useForm();
+function Affecter({ actualiser, id, nomdep, deps, qtedispo, code, qteDep }) {
+    const { token } = useContext(TokenContext);
     let qteAffecter = 0;
     let pers_qte = {};
-    let pers_qte_current = {};
+    let pers_qte_current = {}; 
 
     const initialise = () => {
-        deps[dep].map(item => {
+        if(isNaN(pers_qte[id])) {
+            pers_qte[id] = qteDep; 
+            pers_qte_current[id] = 0;
+        }
+        deps[id].map(item => {
             if(isNaN(pers_qte[item.login])) {
                 pers_qte[item.login] = item.qte;
-                if (isNaN(pers_qte[dep])) {
-                    pers_qte[dep] = 0
-                    pers_qte_current[dep] = 0
-                }
-                pers_qte[dep] = parseInt(pers_qte[dep]) + parseInt(item.qte);
                 pers_qte_current[item.login] = 0;
             }
             return <option key={item.login} value={item.login}>{item.nom}</option>
@@ -29,9 +30,8 @@ function Affecter({ id, dep, deps, qtedispo, code }) {
     const charger_value = (e) => {
         const v = e.target.value
         var affecter = document.querySelector("#affecter")
-        var qte = document.querySelector("#qte"+code+id)
-        var qtedemander = document.getElementById('qtedemander' + code + id)
-        // console.log(document.getElementById('qtedemander' + code + id));
+        var qte = document.querySelector("#qte" + code + "" +id)
+        var qtedemander = document.getElementById('qtedemander' + code + "" + id)
         if(v === "choix") {
             qtedemander.textContent  = "aucun"
             qte.hidden = true;
@@ -70,89 +70,70 @@ function Affecter({ id, dep, deps, qtedispo, code }) {
         else {
             qte.value = pers_qte_current[affecter.value]
         }
-        // const value = parseInt(e.target.value);
-        // const different = value - pers_qte_current[currentSelect];
-        // console.log(value, different);
-
-        // if(different >= 0) {
-        //     if(qteAffecter + different <= qtedispo) {
-        //         setQteCurrent(value);
-        //         pers_qte_current[currentSelect] = value;
-        //         qteAffecter = qteAffecter + different
-        //         console.log("diallo", pers_qte_current);
-        //     }
-        // }
-        // else {
-        //     if(qteAffecter + different >= 0) {
-        //         setQteCurrent(value);
-        //         pers_qte_current[currentSelect] = value;
-        //         qteAffecter = qteAffecter + different
-        //         console.log("bah", pers_qte_current);
-        //     }
-        // }
-        // console.log("total affecter: ", qteAffecter);
     }
 
-    // const onSubmit = (data) => {
-    //     const type = data.aff.split('|')[1];
-    //     console.log(code);
-    //     api.post("/affectationservice/addAffe", code, {
-    //         headers: {
-    //             'Content-Type': 'application/text',
-    //             'Authorization': 'Bearer ' + token,
-    //         }
-    //     })
-    //         .then(res => {
-    //             if (res.status === 200) {
-    //                 alert("Enregistrement effecteur avec succès");
-    //                 fetch();
-    //             }
-    //             else {
-    //                 window.alert("Une erreur sait produit !!!");
-    //             }
-    //         })
-    //         .catch(function (error) {
-    //             console.log(error);
-    //             // Navigate({to: ""})
-    //         })
-    // }
-
-    // let [datas, setDatas] = useState([]);
+    const valider = (e) => {
+        let donnees = [];
+        Object.keys(pers_qte_current).map(item => {
+            if(pers_qte_current[item] !== 0) {
+                if(String(item) === String(id)) {
+                    donnees.push({"ressource": code, "pers_dep": null, "dep": id, "qte": pers_qte_current[id]});
+                    return null
+                }
+                else {
+                    donnees.push({"ressource": code, "pers_dep": item, "dep": null, "qte": pers_qte_current[item]});
+                    return null
+                }
+            }            
+        })
+        api.post("/affectationservice/addAffe", donnees, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token,
+            }
+        })
+        .then(res => {
+            if (res.status === 200) {
+                toast.success("Les affectations on été effecteur avec succès. ✌️👍🏿", {
+                    position: toast.POSITION.TOP_CENTER,
+                    autoClose: 5000,
+                    theme: "colored"
+                });
+                actualiser();
+            }
+            else {
+                toast.error("Une error est survenue, l'affectation n'a pas aboutie !!!", {
+                    position: toast.POSITION.TOP_RIGHT,
+                    autoClose: 10000,
+                    theme: "colored"
+                });
+            }
+        })
+        .catch(function (error) {
+            toast.error("Une error est survenue, l'affectation n'a pas aboutie !!!", {
+                position: toast.POSITION.TOP_RIGHT,
+                autoClose: 10000,
+                theme: "colored"
+            });
+        })
+    }
     
     useEffect(() => {
-        initialise();
-        // const fetchData = async (data) => {
-        //     //     const res = await api.post("/affectationservice/", data.id, {
-        //     //         headers: {
-        //     //             'Content-Type': 'application/json',
-        //     //             'Authorization': 'Bearer ' + token,
-        //     //         }
-        //     //     })
-        //     //     if (res.status === 200) {
-        //     //         console.log(res.data);
-        //     //     }
-        //     //     else {
-        //     //         console.log("Une erreur sait produit !!!");
-        //     //     }
-        //     // }
-        //     // const data = {
-        //     //     "id":"1"
-        // }
-        // fetchData(data);
+        initialise();    
     }, [])
 
     return (
         <>
-            <button id={"btn" + id} hidden={true} type="button" className="btn btn-outline-primary btn-sm" data-toggle="modal" data-target={"#aff1" + id}>Affecter</button>
-            <div className="modal fade" id={"aff1" + id} tabindex="-1">
+            <button id={"btn" + code + "" + id} hidden={true} type="button" className="btn btn-outline-primary btn-sm" data-toggle="modal" data-target={"#aff1" + code + "" + id}>Affecter</button>
+            <div className="modal fade" id={"aff1" + code + "" + id} tabindex="-1">
                 <div className="modal-dialog">
                     <div className="modal-content">
                         <div className="modal-header">
-                            <h5 className="modal-title">Département {dep} :</h5>
+                            <h5 className="modal-title">Département {nomdep} :</h5>
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div className="modal-body">
-                            <form >
+                            <form>
                                 <div className="row mb-3">
                                     <label for="inputText" className="col-sm-10 col-form-label">
                                         <span className="badge border-primary border-1 text-primary">Personnel/département</span>
@@ -160,9 +141,9 @@ function Affecter({ id, dep, deps, qtedispo, code }) {
                                     <div className="col-sm-10">
                                         <select className="form-select" onChange={(e) => { charger_value(e) }}>
                                             <option selected value={"choix"}>Choix</option>
-                                            <option value={dep}> Département {dep}</option>
+                                            {qteDep !== 0 && <option value={id}> Département {nomdep}</option>}
                                             {
-                                                deps[dep].map(item => {
+                                                deps[id].map(item => {
                                                     return <option value={item.login}>{item.nom}</option>
                                                 })
                                             }
@@ -170,7 +151,7 @@ function Affecter({ id, dep, deps, qtedispo, code }) {
                                     </div>
                                 </div>
                                 <div className="row mb-3">
-                                    <label className="col-sm-10 col-form-label"><span className="badge border-primary border-1 text-primary">Quantité demandée:</span> <span id={'qtedemander' + code + id}>aucun</span> </label>
+                                    <label className="col-sm-10 col-form-label"><span className="badge border-primary border-1 text-primary">Quantité demandée:</span> <span id={'qtedemander' + code + "" + id}>aucun</span> </label>
                                 </div>
                                 <div className="row mb-3">
                                     <label className="col-sm-10 col-form-label"><span className="badge border-primary border-1 text-primary">Quantité livrée:</span> {qtedispo} </label>
@@ -178,24 +159,24 @@ function Affecter({ id, dep, deps, qtedispo, code }) {
                                 <div className="row mb-3">
                                     <label for="inputNumber" className="col-sm-10 col-form-label"><span className="badge border-primary border-1 text-primary">Quantité à affecter</span></label>
                                     <div className="col-sm-10">
-                                        <input hidden={true} type="number" id={"qte" + code + id} className="form-control" onChange={(e) => { calculer(e); }} />
+                                        <input hidden={true} type="number" id={"qte" + code + "" + id} className="form-control" onChange={(e) => { calculer(e); }} />
                                     </div>
                                 </div>
                                 <div className="row mb-3 d-f">
-                                    <button type="submit" className="btn btn-primary" data-bs-dismiss="modal">Affecter</button>
+                                    <button type="button" className="btn btn-primary" data-bs-dismiss="modal" onClick={(e) => { valider(e); }} >Affecter</button>
                                 </div>
                             </form>
                         </div>
                     </div>
                 </div>
             </div>
-            {/* onSubmit={handleSubmit(onSubmit)} */}
         </>
     )
 }
 
-function Tr({ item }) {
-    let deps = { "choix": [] };
+function Tr({ item, actualiser }) {
+    let deps = { "choix": [] }
+
     const changer = (e) => {
         const value = e.target.value
         const btns = document.querySelectorAll("#td" + item.code + " > button")
@@ -204,16 +185,7 @@ function Tr({ item }) {
             document.getElementById("btn" + value).hidden = false
         }
     }
-    // useEffect(() => {
-    //     const fetchData = () => {
-    //         item.departements.map(item => {
-    //             console.log(item.nom);
 
-    //         })
-    //         console.log(deps);
-    //     }
-    //     fetchData();
-    // }, [])
     return (
         <>
             <tr>
@@ -226,8 +198,8 @@ function Tr({ item }) {
                             <option key={"choix"} value={"choix"}>Choix</option>
                             {
                                 item.departements.map(it => {
-                                    deps[it.nom] = it.personnels;
-                                    return <option key={it.id} value={it.nom}>{it.nom}</option>
+                                    deps[it.id] = it.personnels;
+                                    return <option key={item.code + "" + it.id} value={item.code + "" + it.id}>{it.nom}</option>
                                 })
                             }
                         </select>
@@ -236,7 +208,7 @@ function Tr({ item }) {
                 <td id={"td" + item.code}>
                     {
                         item.departements.map(it => {
-                            return <Affecter id={it.nom} dep={it.nom} deps={deps} qtedispo={item.qte} code={item.code} />
+                            return <Affecter actualiser={actualiser} id={it.id} nomdep={it.nom} deps={deps} qteDep={it.qte} qtedispo={item.qte} code={item.code} />
                         })
                     }
 
@@ -247,106 +219,59 @@ function Tr({ item }) {
 }
 
 function RessourcesLivrees() {
-    const { register, handleSubmit, reset, formState: { errors } } = useForm();
-    const cadetblue = { color: "cadetblue" }
-    const datat = {
-        data: [
-            {
-                nom: "hp 8g",
-                code: 20,
-                type: "Ordinateur",
-                qte: 50,
-                departements: [
-                    {
-                        id: 1,
-                        nom: "Info",
-                        qte: 2,
-                        personnels: [
-                            {
-                                "login": "zahi",
-                                "nom": "Zahi",
-                                "qte": 1
-                            },
-                            {
-                                "login": "diallo",
-                                "nom": "Diallo",
-                                "qte": 2
-                            }
-                        ]
-                    },
-                    {
-                        id: 2,
-                        nom: "Math",
-                        qte: 3,
-                        personnels: [
-                            {
-                                "login": "bah",
-                                "nom": "bah",
-                                "qte": 5
-                            },
-                            {
-                                "login": "sylla",
-                                "nom": "Sylla",
-                                "qte": 4
-                            }
-                        ]
-                    }
-                ]
-            }
-        ]
-    }
-
-    const { token, updateToken } = useContext(TokenContext);
+    const { token } = useContext(TokenContext);
     const [data, setData] = useState([]);
-    const [affectations, setAffectations] = useState([]);
 
     const fetchData = async () => {
-        // const aff = await api.get("/affectationservice/listaffectations", {
-        //     headers: {
-        //         'Content-Type': 'application/json',
-        //         'Authorization': 'Bearer ' + token,
-        //     }
-        // })
-        // if (aff.status === 200) {
-        //     setAffectations(aff.data);
-        // } else {
-        //     window.alert("Une erreur sait produit !!!");
-        // }
 
-        // const res = await api.get("/ressourceservice/ListLiv", {
-        //     headers: {
-        //         'Content-Type': 'application/json',
-        //         'Authorization': 'Bearer ' + token,
-        //     }
-        // })
-        // if (res.status === 200) {
-        //     setData(res.data);
-        // }
-        // else {
-        //     console.log("Une erreur sait produit !!!");
-        // }
+        const res = await api.get("/ressourceservice/ListLiv", {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token,
+            }
+        })
+        if (res.status === 200) {
+            setData(res.data);
+        }
+        else if(res.status >= 500) {
+            toast.error("Une erreur sait produit au niveau du soeur !!!", {
+                position: toast.POSITION.TOP_RIGHT,
+                autoClose: 10000,
+                theme: "colored"
+            });
+        }
     }
 
-    // useEffect(() => {
-    //     setData(datat);
-    //     fetchData();
-    // }, [])
+    useEffect(() => {
+        fetchData();
+    }, [])
 
     return (
         <React.Fragment>
+            <input type="hidden" id={"affecter"} value="-1" />
             <div className="pagetitle">
-                <h1>Réssource livrer</h1>
+                <h1>RESSOURCES LIVRER</h1>
                 <nav>
                     <ol className="breadcrumb">
-                        <li className="breadcrumb-item"><a href="index.html">Accueil</a></li>
-                        <li className="breadcrumb-item">Ressources livrées</li>
-                        <li className="breadcrumb-item"><input type="hidden" id={"affecter"} value="-1" /></li>
+                        <li className="breadcrumb-item">
+                            <Link to={"/Responsable"}>Accueil</Link>
+                        </li>
+                             <span>&nbsp; &gt; &nbsp;</span>
+                             <li className="breadcrumb-item">
+                            <Link to={"/Responsable/RessourcesLivrees"}>Ressources livrées</Link>
+                        </li>
                     </ol>
                 </nav>
             </div>
             {/* <!-- End Page Title --> */}
 
             <section className="section">
+            <div className='row'>
+                    {/* <div className='col-1'></div> */}
+                    <div className='col-10'></div>
+                    <div className='col-2 d-flex justify-content-end'><button className='btn btn-primary' onClick={(e) => { fetchData() }}>Actualiser</button></div>
+                </div>
+                <br />
                 <div className="row">
                     <div className="col-lg-12">
                         <div className="card">
@@ -366,17 +291,16 @@ function RessourcesLivrees() {
                                     <tbody>
 
                                         {
-                                            datat.data.map(item => {
+                                            data.map(item => {
                                                 let i = 0;
                                                 return (
-                                                    <Tr item={item} />
+                                                    <Tr item={item} actualiser={fetchData} />
                                                 )
                                             })
                                         }
 
                                     </tbody>
                                 </table>
-                                {/* <!-- End Table with stripped rows --> */}
 
                             </div>
                         </div>

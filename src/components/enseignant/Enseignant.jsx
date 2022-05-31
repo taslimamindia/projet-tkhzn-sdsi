@@ -1,25 +1,25 @@
-import { React } from "react";
-import { Routes, Route } from 'react-router-dom';
-import Accueil from "./accueil/Accueil";
-import FaireUneDemande from "./demande/FaireUneDemande";
-import Navbarenseignant from "./Navbarenseignant";
-import './Enseignant.css';
+import React, { useContext } from "react";
+import Header from "../Header";
+import { Leftside } from "./Leftside";
+import { Layout } from "./Layout";
+import { Footer } from "../Footer";
+import TokenContext from "../context/TokenContext";
+import Connection from "../connection/Connection";
 
 function Enseignant() {
-    return (
-      <div class="container mt-5 pt-1">
-          <main class="card card-body">
+  const { token, role } = useContext(TokenContext);
+  console.log(token)
+  return (
+    (token !== "" && (role === "CHEFDEPARTEMENT" || role === "ENSEIGNANT" || role === "ADMINISTRATIF")) ?
+      <>
+        <Header />
+        <Leftside />
+        <Layout />
+        <Footer />
+      </>
+      :
+      <Connection />
+  )
+}
 
-            <Navbarenseignant />
-
-            <Routes>
-                <Route path="/" element={<Accueil />} />
-                <Route path="/FaireUneDemande" element={<FaireUneDemande />} />
-            </Routes>
-
-          </main>
-      </div>
-    )
-  }
-  
-  export default Enseignant;
+export default Enseignant;
