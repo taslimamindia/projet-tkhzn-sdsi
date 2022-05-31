@@ -1,14 +1,7 @@
 import React from 'react'
-import { useForm } from "react-hook-form";
 import { Link } from 'react-router-dom';
 
 function Accueil() {
-    const { register, handleSubmit, reset, formState: { errors } } = useForm();
-    
-    const onSubmit = (data) => {
-        console.log(JSON.stringify(data));
-        reset()
-    }
 
     return (
         <React.Fragment>
@@ -22,7 +15,6 @@ function Accueil() {
                     </ol>
                 </nav>
             </div>
-            {/* <!-- End Page Title --> */}
 
             <section className="section dashboard">
                 <div className="row">

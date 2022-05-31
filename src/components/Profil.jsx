@@ -1,32 +1,32 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { Link } from "react-router-dom"
+import api from '../api'
 import TokenContext from './context/TokenContext'
 
 function Profil({ home }) {
-  const { token, updateToken } = useContext(TokenContext)
+  const { token } = useContext(TokenContext)
 
   const charge = () => {
-    // api.post("/auth/inscription", JSON.stringify(data), { headers: { 'Content-Type': 'application/json'} })
-    // .then(res => {
-    //     if(res.status === 200) {
-    //         const value = res.data.token;
-    //         console.log(value);
-    //         setCrach(false); setError(false); 
-    //         reset(); setSuccess(true);
-    //     } 
-    //     if(res.status === 600) {
-    //         setError(true);
-    //     } 
-    //     else {
-    //         setCrach(true)
-    //     }          
-    // })
-    // .catch(function (error) {
-    //     setCrach(true);
-    //     Navigate({to: ""});
-
-    // })
+    api.get("/auth/userInfo", {
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token,
+      }
+    })
+    .then(res => {
+        if(res.status === 200) {
+            const value = res.data.token;
+            console.log(value);
+        }           
+    })
+    .catch(function (error) {
+    })
   }
+  
+  useEffect(() => {
+    charge();
+  }, [])
+
   return (
     <>
       <div className="pagetitle">

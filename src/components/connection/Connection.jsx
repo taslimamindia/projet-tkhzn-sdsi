@@ -1,10 +1,8 @@
-import React, { useContext } from 'react'
-import TokenContext from '../context/TokenContext';
+import React, { useContext } from 'react';
 import FormLogin from './FormLogin';
+import imageUser from './fst.png';
 
 function Connection() {
-    
-
     return (
         <div>
             <div className="container">
@@ -16,10 +14,9 @@ function Connection() {
 
                                 <div className="d-flex justify-content-center py-4">
                                     <div className="logo d-flex align-items-center w-auto">
-                                        <span className="d-none d-lg-block"><img src="./assets/img/fst.png" width="400px" height="400px" alt=""/></span>
+                                        <span className="d-none d-lg-block"><img src={imageUser} width="400px" height="400px" alt=""/></span>
                                     </div>
                                 </div>
-                                {/* <!-- End Logo --> */}
 
                                 <div className="card mb-3">
 
@@ -27,7 +24,6 @@ function Connection() {
 
                                         <div className="pt-4 pb-2">
                                             <h5 className="card-title text-center pb-0 fs-4">S'authentifier</h5>
-                                            {/* <p className="text-center small">Entrer votre nom d'utilisateur et mot de passe</p> */}
                                         </div>
 
                                         <FormLogin />

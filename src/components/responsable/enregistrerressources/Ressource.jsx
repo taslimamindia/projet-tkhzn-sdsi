@@ -1,19 +1,22 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { useForm } from "react-hook-form";
-import { Navigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import api from '../../../api';
 import TokenContext from '../../context/TokenContext';
 import Fournisseur from './Fournisseur';
 import Imprimante from './Imprimante';
 import Ordinateur from './Ordinateur';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+toast.configure();
 
 function Ressource() {
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
-    const { token, updateToken } = useContext(TokenContext);
-
+    const { token } = useContext(TokenContext);
     const [checked, setChecked] = useState(false);
-    const handleChange = () => { setChecked(!checked); }
 
+    const handleChange = () => { setChecked(!checked); }
+    
     const [checkedImp, setCheckedImp] = useState(false);
     const handleChangeImp = () => {
         setCheckedOrd(false);
@@ -26,20 +29,12 @@ function Ressource() {
         setCheckedOrd(true);
     }
 
-
     const onSubmit = (data) => {
         let fournisseur;
         let ordinateur;
         let imprimante;
         let newFournisseur;
-        let login
-        let code;
-        if(data.type === "ordinateur"){
-            code = "O"+data.code
-        }
-        else{
-            code = "I"+data.code
-        }
+
         if (checked === true) {
             fournisseur = {
                 "login": data.login,
@@ -58,7 +53,6 @@ function Ressource() {
 
         if (data.type === "imprimante") {
             imprimante = {
-                "code": code,
                 "dureeGarantie": data.garantie,
                 "dateLiv": data.datelivraison,
                 "vitesse": data.vitesse,
@@ -69,7 +63,6 @@ function Ressource() {
         }
         else {
             ordinateur = {
-                "code": code,
                 "dureeGarantie": data.garantie,
                 "dateLiv": data.datelivraison,
                 "marque": data.marqueordinateur,
@@ -87,35 +80,46 @@ function Ressource() {
             "ordi": ordinateur,
             "imp": imprimante,
             "fournisseur": fournisseur,
-            "nouv": newFournisseur
+            "nouv": newFournisseur,
+            "qte": data.quantite
         }
 
         const donnee = JSON.stringify(addressource);
-        console.log(donnee);
+        
         api.post("/ressourceservice/addRess", donnee, {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + token,
             }
         })
-        .then(res => {
-            if (res.status === 200) {
-                alert("Enregistrement effecteur avec succès");
-                reset()
-            }
-            else {
-                window.alert("Une erreur sait produit !!!");
-            }
-        })
-        .catch(function (error) {
-            console.log(error);
-            // Navigate({to: ""})
-        })
+            .then(res => {
+                if (res.status === 200) {
+                    toast.success("La ressource a été ajouter avec succes.", {
+                        position: toast.POSITION.TOP_RIGHT,
+                        autoClose: 5000,
+                        theme: "colored"
+                    });
+                    reset();
+                }
+                else {
+                    toast.error("🤦🏿‍♂️ Une error est survenue dans la rêquete 🙆‍♀️!!!", {
+                        position: toast.POSITION.TOP_CENTER,
+                        autoClose: 10000,
+                        theme: "colored"
+                    })
+                }
+            })
+            .catch(function (error) {
+                toast.error("🤦🏿‍♂️ Une error est survenue dans la rêquete 🙆‍♀️!!!", {
+                    position: toast.POSITION.TOP_CENTER,
+                    autoClose: 10000,
+                    theme: "colored"
+                })
+            })
     }
 
     let [data, setData] = useState([]);
     useEffect(() => {
-
         const fetchData = async () => {
             const res = await api.get("/userservice/fournisseurs", {
                 headers: {
@@ -125,7 +129,6 @@ function Ressource() {
             })
             if (res.status === 200) {
                 setData(res.data);
-                // console.log(data);
             }
             else {
                 console.log("Une erreur sait produit !!!");
@@ -136,14 +139,24 @@ function Ressource() {
 
     return (
         <React.Fragment>
-
             <div className="pagetitle">
-                <h1>Enregistement des Ressources</h1>
+                <h1>ENREGISTREMENT DES RESSOURCES</h1>
+                <nav>
+                    <ol className="breadcrumb">
+                        <li className="breadcrumb-item">
+                            <Link to={"/Responsable"}>Accueil</Link>
+                        </li>
+                        <span>&nbsp; &gt; &nbsp;</span>
+                        <li className="breadcrumb-item">
+                            <Link to={"/Responsable/EnregistrerRessources"}>Enregistrer Ressources</Link>
+                        </li>
+                    </ol>
+                </nav>
             </div>
-
             {/* <!-- End Page Title -->  */}
 
             <section className="section">
+                
                 <div className="row">
                     <div className="col-lg-6">
                         <div className="card">
@@ -152,16 +165,7 @@ function Ressource() {
 
                                 {/* <!-- General Form Elements --> */}
                                 <form onSubmit={handleSubmit(onSubmit)}>
-                                    <div className="row mb-3">
-                                            <label htmlFor="code" className="col-sm-10 col-form-label">Code</label>
-                                            <div className="col-sm-10">
-                                                <input
-                                                    {...register("code", { required: true })}
-                                                    type="txt" className="form-control" id='code'
-                                                />
-                                                {errors.code && <div className="text-danger text-center w-100">* Champ est obligatoire</div>}
-                                            </div>
-                                        </div>
+
                                     <div className="row mb-3">
 
                                         <label htmlFor="login" className="col-sm-10 col-form-label">Fournisseur</label>
@@ -237,11 +241,21 @@ function Ressource() {
                                         {checkedImp && <Imprimante register={register} errors={errors} />}
 
                                         {checkedOrd && <Ordinateur register={register} errors={errors} />}
-
                                         <div className="row mb-3">
+                                            <label htmlFor="quantite" className="col-sm-10 col-form-label">Quantité Livrée</label>
                                             <div className="col-sm-10">
-                                                <button type="submit" className="btn btn-primary">Enregister</button>
+                                                <input
+                                                    {...register("quantite", { required: true })}
+                                                    type="txt" className="form-control" id='quantite'
+                                                />
+                                                {errors.quantite && <div className="text-danger text-center w-100">* Champ est obligatoire</div>}
                                             </div>
+                                        </div>
+
+                                    </div>
+                                    <div className="row mb-3">
+                                        <div className="col-sm-10">
+                                            <button type="submit" className="btn btn-primary">Enregister</button>
                                         </div>
                                     </div>
                                 </form>
